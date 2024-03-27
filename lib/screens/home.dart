@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.blue,
         actions: [
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: Icon(Icons.exit_to_app,color: Colors.white,),
             onPressed: () {
               logout().then((value) => {
                     Navigator.of(context).pushAndRemoveUntil(
@@ -40,8 +40,9 @@ class _HomeState extends State<Home> {
           Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => PostForm()));
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.add,color: Colors.white,),
         shape: CircleBorder(),
+        backgroundColor: Colors.blue,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(

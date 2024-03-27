@@ -1,6 +1,10 @@
 import 'dart:io';
 
 import 'package:blogapp/constant.dart';
+import 'package:blogapp/models/api_response.dart';
+import 'package:blogapp/screens/login.dart';
+import 'package:blogapp/services/post_service.dart';
+import 'package:blogapp/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -18,6 +22,37 @@ class _PostFormState extends State<PostForm> {
 
   File? _imageFile;
   final _picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
+  void _createPost() async {
+    String? image = _imageFile == null ? null : getStringImage(_imageFile);
+
+    ApiResponse response = await createPost(_txtControllerBody.text, image);
+
+    if (response.error == null) {
+      Navigator.of(context).pop();
+    } else if (response.error == unauthorized) {
+      logout().then((value) => {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => Login()),
+                (route) => false)
+          });
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+      setState(() {
+        _loading = !_loading;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +73,12 @@ class _PostFormState extends State<PostForm> {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: 200,
+                  decoration: BoxDecoration(
+                      image: _imageFile == null
+                          ? null
+                          : DecorationImage(
+                              image: FileImage(_imageFile ?? File('')),
+                              fit: BoxFit.cover)),
                   child: Center(
                       child: IconButton(
                     icon: Icon(
@@ -45,7 +86,9 @@ class _PostFormState extends State<PostForm> {
                       size: 50,
                       color: Colors.black38,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      getImage();
+                    },
                   )),
                 ),
                 Form(
@@ -73,6 +116,7 @@ class _PostFormState extends State<PostForm> {
                       setState(() {
                         _loading = !_loading;
                       });
+                      _createPost();
                     }
                   }),
                 )
