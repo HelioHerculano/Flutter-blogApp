@@ -16,40 +16,72 @@ const serverError = 'Server error';
 const unauthorized = 'Unauthorized';
 const somethingWentWrong = 'Same thing went wrong, try again!';
 
-
-
 //--- Input decoration ---
-InputDecoration kInputDecoration(String label){
-  return  InputDecoration(
-          labelText: label,
-          contentPadding: const EdgeInsets.all(10),
-          border: const OutlineInputBorder(borderSide: BorderSide(width: 1,color: Colors.black))
-        );
+InputDecoration kInputDecoration(String label) {
+  return InputDecoration(
+      labelText: label,
+      contentPadding: const EdgeInsets.all(10),
+      border: const OutlineInputBorder(
+          borderSide: BorderSide(width: 1, color: Colors.black)));
 }
 
 //-- Button --
-TextButton kTextButton(String label, Function onPressed){
+TextButton kTextButton(String label, Function onPressed) {
   return TextButton(
-          onPressed: () => onPressed(),
-            style: ButtonStyle(
-              backgroundColor: MaterialStateColor.resolveWith((states) => Colors.blue),
-              padding: MaterialStateProperty.resolveWith((states) => const EdgeInsets.symmetric(vertical: 10))
-            ),
-          child:  Text(label,style: const TextStyle(color: Colors.white),),
-          );
+    onPressed: () => onPressed(),
+    style: ButtonStyle(
+        backgroundColor:
+            MaterialStateColor.resolveWith((states) => Colors.blue),
+        padding: MaterialStateProperty.resolveWith(
+            (states) => const EdgeInsets.symmetric(vertical: 10))),
+    child: Text(
+      label,
+      style: const TextStyle(color: Colors.white),
+    ),
+  );
 }
 
 //loginRegisterHint
 
-Row kLoginRegisterHint(String text,String label, Function onTap){
+Row kLoginRegisterHint(String text, String label, Function onTap) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
       Text(text),
       GestureDetector(
-        child:  Text(label,style: const TextStyle(color: Colors.blue),),
+        child: Text(
+          label,
+          style: const TextStyle(color: Colors.blue),
+        ),
         onTap: () => onTap(),
       )
     ],
   );
+}
+
+// Like end comment btn
+
+Expanded KLikeAndCommet(int value, IconData icon, Color color, Function onTap) {
+  return Expanded(
+      child: Material(
+    child: InkWell(
+        onTap: () => onTap(),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: color
+              ),
+              SizedBox(
+                width: 4,
+              ),
+              Text('$value')
+            ],
+          ),
+        )),
+  ));
 }
