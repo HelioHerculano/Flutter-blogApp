@@ -86,7 +86,7 @@ Future<ApiResponse> editPost(int postId, String body) async {
     String token = await getToken();
     final response = await http.put(Uri.parse('$postsURL/$postId'), headers: {
       'Accept': 'application/json',
-      'Authorization': 'Barber $token'
+      'Authorization': 'Bearer $token'
     }, body: {
       'body': body
     });
@@ -96,7 +96,7 @@ Future<ApiResponse> editPost(int postId, String body) async {
         apiResponse.data = jsonDecode(response.body)['message'];
         break;
       case 403:
-        apiResponse.error = jsonDecode(response.body)['message'];
+        apiResponse.data = jsonDecode(response.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthorized;
@@ -112,24 +112,24 @@ Future<ApiResponse> editPost(int postId, String body) async {
   return apiResponse;
 }
 
-//Edit Post
+//Delete Post
 Future<ApiResponse> deletePost(int postId) async {
   ApiResponse apiResponse = ApiResponse();
 
   try {
     String token = await getToken();
-    final response = await http.delete(Uri.parse('$postsURL/$postId'), 
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Barber $token'
-    });
+    final response = await http.delete(Uri.parse('$postsURL/$postId'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        });
 
     switch (response.statusCode) {
       case 200:
         apiResponse.data = jsonDecode(response.body)['message'];
         break;
       case 403:
-        apiResponse.error = jsonDecode(response.body)['message'];
+        apiResponse.data = jsonDecode(response.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthorized;
@@ -145,3 +145,32 @@ Future<ApiResponse> deletePost(int postId) async {
   return apiResponse;
 }
 
+//Like or unlike post
+Future<ApiResponse> likeOrUnlinkePost(int postId) async {
+  ApiResponse apiResponse = ApiResponse();
+
+  try {
+    String token = await getToken();
+    final response = await http.post(Uri.parse('$postsURL/$postId/likes'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        });
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+
+  return apiResponse;
+}

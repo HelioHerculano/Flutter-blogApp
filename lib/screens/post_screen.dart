@@ -1,4 +1,5 @@
 import 'package:blogapp/models/api_response.dart';
+import 'package:blogapp/screens/post_form.dart';
 import 'package:blogapp/services/post_service.dart';
 import 'package:blogapp/services/user_service.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,40 @@ class _PostScreenState extends State<PostScreen> {
         _postList = response.data as List<dynamic>;
         _loading = _loading ? !_loading : _loading;
       });
+    } else if (response.error == unauthorized) {
+      logout().then((value) => {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => Login()),
+                (route) => false)
+          });
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+    }
+  }
+
+  Future _handlePostLikeDislike(int postId) async {
+    ApiResponse response = await likeOrUnlinkePost(postId);
+
+    if (response.error == null) {
+      retrievePosts();
+    } else if (response.error == unauthorized) {
+      logout().then((value) => {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => Login()),
+                (route) => false)
+          });
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+    }
+  }
+
+  Future _handleDeletePost(int postId) async {
+    ApiResponse response = await deletePost(postId);
+
+    if (response.error == null) {
+      retrievePosts();
     } else if (response.error == unauthorized) {
       logout().then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
@@ -118,8 +153,13 @@ class _PostScreenState extends State<PostScreen> {
                                     onSelected: (val) {
                                       if (val == 'edit') {
                                         //edit
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PostForm(
+                                          title: "Edit Post",
+                                          post: post,
+                                        )));
                                       } else {
                                         //delete
+                                        _handleDeletePost(post.id ?? 0);
                                       }
                                     },
                                   )
@@ -152,8 +192,9 @@ class _PostScreenState extends State<PostScreen> {
                                     : Icons.favorite_outline,
                                 post.selfLiked == true
                                     ? Colors.red
-                                    : Colors.black38,
-                                () {}),
+                                    : Colors.black38, () {
+                              _handlePostLikeDislike(post.id ?? 0);
+                            }),
                             Container(
                               height: 25,
                               width: 0.5,

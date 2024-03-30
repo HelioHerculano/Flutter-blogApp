@@ -23,7 +23,10 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.blue,
         actions: [
           IconButton(
-            icon: Icon(Icons.exit_to_app,color: Colors.white,),
+            icon: Icon(
+              Icons.exit_to_app,
+              color: Colors.white,
+            ),
             onPressed: () {
               logout().then((value) => {
                     Navigator.of(context).pushAndRemoveUntil(
@@ -37,10 +40,15 @@ class _HomeState extends State<Home> {
       body: currentIndex == 0 ? PostScreen() : Profile(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => PostForm()));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => PostForm(
+                    title: "Add New Post",
+                  )));
         },
-        child: Icon(Icons.add,color: Colors.white,),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         shape: CircleBorder(),
         backgroundColor: Colors.blue,
       ),
@@ -52,14 +60,8 @@ class _HomeState extends State<Home> {
         shape: CircularNotchedRectangle(),
         child: BottomNavigationBar(
             items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: ''
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person), 
-                label: ''
-              )
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+              BottomNavigationBarItem(icon: Icon(Icons.person), label: '')
             ],
             currentIndex: currentIndex,
             onTap: (val) {
@@ -67,8 +69,7 @@ class _HomeState extends State<Home> {
                 currentIndex = val;
               });
             }),
-        ),
-      );
-
+      ),
+    );
   }
 }
