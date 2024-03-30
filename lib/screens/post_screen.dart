@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../constant.dart';
 import '../models/post.dart';
+import 'comment_screem.dart';
 import 'login.dart';
 
 class PostScreen extends StatefulWidget {
@@ -81,7 +82,7 @@ class _PostScreenState extends State<PostScreen> {
     retrievePosts();
     super.initState();
   }
-
+  @override
   Widget build(BuildContext context) {
     return _loading
         ? Center(
@@ -153,10 +154,12 @@ class _PostScreenState extends State<PostScreen> {
                                     onSelected: (val) {
                                       if (val == 'edit') {
                                         //edit
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PostForm(
-                                          title: "Edit Post",
-                                          post: post,
-                                        )));
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                                builder: (context) => PostForm(
+                                                      title: "Edit Post",
+                                                      post: post,
+                                                    )));
                                       } else {
                                         //delete
                                         _handleDeletePost(post.id ?? 0);
@@ -201,7 +204,12 @@ class _PostScreenState extends State<PostScreen> {
                               color: Colors.black38,
                             ),
                             KLikeAndCommet(post.commentsCount ?? 0,
-                                Icons.sms_outlined, Colors.black54, () {}),
+                                Icons.sms_outlined, Colors.black54, () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => CommentScreen(
+                                        postId: post.id,
+                                      )));
+                            }),
                           ],
                         ),
                         Container(
